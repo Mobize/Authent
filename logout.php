@@ -6,6 +6,7 @@ session_destroy();
 
 //TODO : delete client cookie
 
+echo '<h1>Déconnexion</h1>';
 echo 'Vous avez bien été déconnecté';
 
 redirectJS('index.php', 2);

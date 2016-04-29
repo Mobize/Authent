@@ -81,7 +81,7 @@ foreach($errors as $error) {
 echo '<hr>';
 */
 ?>
-
+<h1>Inscription</h1>
 
 <form method="POST">
 
