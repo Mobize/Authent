@@ -57,6 +57,7 @@ if (!empty($_POST)) {
 
 			if (!empty($insert_id)) {
 
+				// On connecte l'utilisateur
 				$_SESSION['user_id'] = $insert_id;
 
 				echo '<div class="alert alert-success" role="alert">';
@@ -64,7 +65,7 @@ if (!empty($_POST)) {
 				echo '</div>';
 
 				//header('Location: index.php');
-				redirectJS('index.php', 3);
+				redirectJS('index.php', 2);
 
 				exit();
 			}
