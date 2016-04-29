@@ -4,8 +4,8 @@ require_once 'inc/config.php';
 //debug($_POST);
 
 // On réceptionne les données du formulaire
-$login = !empty($_POST['login']) ? strip_tags($_POST['login']) : '';
-$password = !empty($_POST['password']) ? strip_tags($_POST['password']) : '';
+$login = !empty($_POST['login']) ? strip_tags(trim($_POST['login'])) : '';
+$password = !empty($_POST['password']) ? strip_tags(trim($_POST['password'])) : '';
 $confirm_password = !empty($_POST['confirm_password']) ? strip_tags($_POST['confirm_password']) : '';
 
 $errors = array();
