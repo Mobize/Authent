@@ -36,7 +36,9 @@ Consignes
 	- Si la requête a fonctionné, mettre l'id du user généré par la requête (AUTO_INCREMENT) en SESSION, puis rediriger l'utilisateur vers la page d'accueil
 
 > **BONUS :**
+>
 > Faire une requête qui vérifie que l'email utilisé à l'inscription n'est pas déjà en base
+>
 > Ajouter un index UNIQUE sur le champ login de la table user
 
 ### Page d'accueil (index.php)
