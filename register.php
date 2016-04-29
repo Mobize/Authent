@@ -13,53 +13,64 @@ $errors = array();
 // Le formulaire a ete soumis, on a appuye sur le bouton Envoyer
 if (!empty($_POST)) {
 
-    // On check les erreurs possibles
-    if (empty($login) || !filter_var($login, FILTER_VALIDATE_EMAIL)) {
-        $errors['login'] = 'Veuillez renseigner un email valide';
-    }
-    if (empty($password)) {
-        $errors['password'] = 'Veuillez renseigner un mot de passe';
-    } else if (strlen($password) < 8) {
-        $errors['password'] = 'Votre mot de passe doit comporter au moins 8 caractères';
-    }
-    if (!empty($password) && $password !== $confirm_password) {
-    	$errors['confirm_password'] = 'Les 2 mots de passe ne correspondent pas';
-    }
+	// On check les erreurs possibles
+	if (empty($login) || !filter_var($login, FILTER_VALIDATE_EMAIL)) {
+		$errors['login'] = 'Veuillez renseigner un email valide';
+	}
+	if (empty($password)) {
+		$errors['password'] = 'Veuillez renseigner un mot de passe';
+	} else if (strlen($password) < 8) {
+		$errors['password'] = 'Votre mot de passe doit comporter au moins 8 caractères';
+	}
+	if (!empty($password) && $password !== $confirm_password) {
+		$errors['confirm_password'] = 'Les 2 mots de passe ne correspondent pas';
+	}
 
-    //debug($errors);
+	//debug($errors);
 
-    // Aucune erreur dans le formulaire, tous les champs ont été saisis correctement
-    if (empty($errors)) {
+	// Aucune erreur dans le formulaire, tous les champs ont été saisis correctement
+	if (empty($errors)) {
 
-    	$crypted_password = password_hash($password, PASSWORD_BCRYPT);
+		// On vérifie que le login/email est pas deja pris
+		$query = $db->prepare('SELECT * FROM user WHERE login = :login');
+		$query->bindValue(':login', $login, PDO::PARAM_STR);
+		$query->execute();
+		$user = $query->fetch();
 
-        $query = $db->prepare('INSERT INTO user SET login = :login, password = :password, date = NOW()');
+		if (!empty($user)) {
+			$errors['login'] = 'Cet email est deja pris';
+		} else {
 
-        // Pour chacune des variables précédées d'un : on doit faire un bindValue pour passer la valeur à la requête
-        $query->bindValue(':login', $login, PDO::PARAM_STR);
-        $query->bindValue(':password', $crypted_password, PDO::PARAM_STR);
+			$crypted_password = password_hash($password, PASSWORD_BCRYPT);
 
-        // On execute la requête
-        $query->execute();
+			$query = $db->prepare('INSERT INTO user SET login = :login, password = :password, date = NOW()');
 
-        // On récupère le numéro de la ligne automatiquement généré par MySQL avec l'attribut AUTO_INCREMENT
-        $insert_id = $db->lastInsertId();
+			// Pour chacune des variables précédées d'un : on doit faire un bindValue pour passer la valeur à la requête
+			$query->bindValue(':login', $login, PDO::PARAM_STR);
+			$query->bindValue(':password', $crypted_password, PDO::PARAM_STR);
 
-        if (!empty($insert_id)) {
+			// On execute la requête
+			$query->execute();
 
-        	$_SESSION['user_id'] = $insert_id;
+			// On récupère le numéro de la ligne automatiquement généré par MySQL avec l'attribut AUTO_INCREMENT
+			$insert_id = $db->lastInsertId();
 
-            echo '<div class="alert alert-success" role="alert">';
-            echo 'Inscription réussie !';
-            echo '</div>';
+			if (!empty($insert_id)) {
 
-            //header('Location: index.php');
-            redirectJS('index.php', 3);
+				$_SESSION['user_id'] = $insert_id;
 
-            exit();
-        }
-        $errors['db_error'] = 'Erreur interne, merci de reessayer ulterieurement';
-    }
+				echo '<div class="alert alert-success" role="alert">';
+				echo 'Inscription réussie !';
+				echo '</div>';
+
+				//header('Location: index.php');
+				redirectJS('index.php', 3);
+
+				exit();
+			}
+			$errors['db_error'] = 'Erreur interne, merci de reessayer ulterieurement';
+		}
+	}
 }
 
 /*
