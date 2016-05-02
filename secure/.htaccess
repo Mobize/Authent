@@ -1,0 +1,6 @@
+AuthGroupFile /dev/null
+AuthName "Espace securise - Acces restreint"
+AuthType Basic
+AuthUserFile "C:/xampp/htdocs/authent/secure/.htpasswd"
+#AuthUserFile "/membri/webforce3/authent/secure/.htpasswd"
+require valid-user

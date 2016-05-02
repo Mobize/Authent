@@ -1,0 +1,5 @@
+# Empecher le listing du repertoire
+Options -Indexes
+
+# Suivre les liens symboliques
+Options +FollowSymLinks
