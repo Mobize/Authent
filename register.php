@@ -100,3 +100,103 @@ echo '<hr>';
 	<input type="submit" value="Inscription">
 
 </form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+
+	function checkPassword(password) {
+
+		var score = 0;
+		if (password.length >= 8) {
+			score++;
+		}
+		if (/[a-z]/.test(password)) {
+			score++;
+		}
+		if (/[A-Z]/.test(password)) {
+			score++;
+		}
+		if (/[0-9]/.test(password)) {
+			score++;
+		}
+		if (/[^\w\s]/gi.test(password)) {
+			score++;
+		}
+
+		//console.log(score);
+
+		return score;
+	}
+
+	function displayPasswordStrength(score, container) {
+		var score_label = '';
+		var score_color = '';
+		switch(score) {
+			case 1:
+				score_label = 'tres faible';
+				score_color = 'red';
+			break;
+			case 2:
+				score_label = 'faible';
+				score_color = 'orange';
+			break;
+			case 3:
+				score_label = 'moyen';
+				score_color = 'grey';
+			break;
+			case 4:
+				score_label = 'fort';
+				score_color = 'lightblue';
+			break;
+			case 5:
+				score_label = 'tres fort';
+				score_color = 'green';
+			break;
+		}
+
+		$(container).css('color', score_color).text(score_label);
+	}
+
+	$('form input[name="password"]').on('blur keyup', function() {
+
+		var password = $(this).val();
+
+		var score = checkPassword(password);
+
+		displayPasswordStrength(score, $(this).next('span'));
+	});
+
+	$('form input[name="login"]').on('blur', function() {
+
+		var login = $(this).val();
+		var $result = $(this).next('span');
+
+		$result.text('');
+
+		if (login.indexOf('@') === -1 ||
+			login.indexOf('.') === -1 ||
+			login.length < 6) {
+			$result.text('Vous devez renseigner un email valide');
+
+			return false;
+		}
+
+		$.ajax({
+			method: 'POST',
+			url: 'ajax-check-login.php',
+			data: {login: login},
+			dataType: 'json'
+		})
+		.done(function(result) {
+
+			if (typeof(result.error) !== 'undefined' && result.error !== null) {
+				$result.css('color', 'red').text(result.error);
+			} else if (typeof(result.status) !== 'undefined' && result.status === true) {
+				$result.css('color', 'green').text("L'email saisi est correct et disponible");
+			}
+		});
+
+	});
+});
+</script>
