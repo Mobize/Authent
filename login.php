@@ -62,6 +62,6 @@ if (!empty($_POST)) {
 	Mot de passe : <input type="password" size="20" name="password">
 	<br><br>
 
-	<input type="submit" value="Inscription">
+	<input type="submit" value="Connexion">
 
 </form>
